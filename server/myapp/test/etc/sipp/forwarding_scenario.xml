@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
+<scenario name="UAC with authentication - Bob Authenticates First, then John sends MESSAGE to Bob">
+  <!-- Bob sends REGISTER to authenticate -->
+  <send retrans="0">
+    <![CDATA[
+      REGISTER sip:[remote_ip] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      From: <sip:bob@[local_ip]:[local_port]>;tag=[pid]SIPpTag00[call_number]
+      To: <sip:bob@[local_ip]:[local_port]>
+      Call-ID: [call_id]
+      CSeq: 1 REGISTER
+      Contact: <sip:bob@[local_ip]:[local_port]>;expires=3600
+      Max-Forwards: 70
+      Subject: Performance Test
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Server responds with 401 Unauthorized, requesting Bob to authenticate -->
+  <recv response="401" auth="true">
+  </recv>
+
+  <!-- Bob sends REGISTER again, this time with credentials -->
+  <send retrans="0">
+    <![CDATA[
+      REGISTER sip:[remote_ip] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      From: <sip:bob@[local_ip]:[local_port]>;tag=[pid]SIPpTag00[call_number]
+      To: <sip:bob@[local_ip]:[local_port]>
+      Call-ID: [call_id]
+      CSeq: 2 REGISTER
+      Contact: <sip:bob@[local_ip]:[local_port]>;expires=3600
+      [authentication username=bob password=286755fad04869ca523320acce0dc6a4]
+      Max-Forwards: 70
+      Subject: Performance Test
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Server responds with 200 OK, indicating successful registration for Bob -->
+  <recv response="200">
+  </recv>
+
+  <!-- John sends REGISTER to authenticate -->
+  <send retrans="0">
+    <![CDATA[
+      REGISTER sip:[remote_ip] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      From: <sip:john@[local_ip]:[local_port]>;tag=[pid]SIPpTag00[call_number]
+      To: <sip:john@[local_ip]:[local_port]>
+      Call-ID: [call_id]
+      CSeq: 3 REGISTER
+      Contact: <sip:john@[local_ip]:[local_port]>;expires=3600
+      [authentication username=john password=286755fad04869ca523320acce0dc6a4]
+      Max-Forwards: 70
+      Subject: Performance Test
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Server responds with 401 Unauthorized, requesting John to authenticate -->
+  <recv response="401" auth="true">
+  </recv>
+
+  <!-- John sends REGISTER again, this time with credentials -->
+  <send retrans="0">
+    <![CDATA[
+      REGISTER sip:[remote_ip] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      From: <sip:john@[local_ip]:[local_port]>;tag=[pid]SIPpTag00[call_number]
+      To: <sip:john@[local_ip]:[local_port]>
+      Call-ID: [call_id]
+      CSeq: 4 REGISTER
+      Contact: <sip:john@[local_ip]:[local_port]>;expires=3600
+      [authentication username=john password=286755fad04869ca523320acce0dc6a4]
+      Max-Forwards: 70
+      Subject: Performance Test
+      Content-Length: 0
+    ]]>
+  </send>
+
+  <!-- Server responds with 200 OK, indicating successful registration for John -->
+  <recv response="200">
+  </recv>
+
+  <!-- John sends MESSAGE to Bob -->
+  <send retrans="0">
+    <![CDATA[
+      MESSAGE sip:bob@[remote_ip] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      From: <sip:john@[local_ip]:[local_port]>;tag=[pid]SIPpTag00[call_number]
+      To: <sip:bob@[local_ip]:[local_port]>
+      Call-ID: [call_id]
+      CSeq: 5 MESSAGE
+      [authentication username=john password=286755fad04869ca523320acce0dc6a4]
+      Max-Forwards: 70
+      Content-Type: text/plain
+      Subject: Performance Test
+      Content-Length: [len]
+
+      Hello Bob! This is John.
+    ]]>
+  </send>

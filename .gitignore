@@ -1,0 +1,4 @@
+.vscode
+server/myapp/output
+server/myapp/logs/logfile.log
+server/myapp/users.json

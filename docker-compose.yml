@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+  server:
+    build: server/
+    ports:
+      - "5060:5060/tcp"
+      - "5060:5060/udp"
+    tty: true
+  client1:
+    build: client/
+    depends_on:
+      - server
+    tty: true
+  client2:
+    build: client/
+    depends_on:
+      - server
+    tty: true

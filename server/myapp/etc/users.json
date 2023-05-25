@@ -1,0 +1,19 @@
+{
+  "users": [
+    {
+      "username": "Bob",
+      "password_hash": "1a1dc91c907325c69271ddf0c944bc72",
+      "URI": ""
+    },
+    {
+      "username": "John",
+      "password_hash": "1a1dc91c907325c69271ddf0c944bc72",
+      "URI": ""
+    },
+    {
+      "username": "AliceGreen",
+      "password_hash": "202cb962ac59075b964b07152d234b70",
+      "URI": ""
+    }
+  ]
+}

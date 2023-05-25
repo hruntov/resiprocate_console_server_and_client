@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE scenario SYSTEM "sipp.dtd">
+
+<scenario name="IM UAS message sending">
+
+  <recv request="REGISTER">
+    <action>
+      <verifyauth assign_to="authvalid" username="Bob" password="1a1dc91c907325c69271ddf0c944bc72" />
+    </action>
+  </recv>
+
+  <nop hide="true" test="authvalid" next="goodauth" />
+  <nop hide="true" next="badauth" />
+
+  <label id="badauth"/>
+  <send next="2">
+    <![CDATA[
+
+      SIP/2.0 401 Unauthorized
+      [last_Via:]
+      [last_From:]
+      [last_To:]
+      [last_Call-ID:]
+      [last_CSeq:]
+      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+      WWW-Authenticate: Digest realm="testserver.com", nonce="09824BC242FCA8847B19F8480CE7768C", algorithm=MD5, stale=true
+      Content-Length: 0
+
+    ]]>
+  </send>
+
+  <label id="goodauth"/>
+  <send next="1">
+    <![CDATA[
+
+      SIP/2.0 200 OK
+      [last_Via:]
+      [last_From:]
+      [last_To:]
+      [last_Call-ID:]
+      [last_CSeq:]
+      Contact: <sip:[local_ip]:[local_port];transport=[transport]>
+      [last_Expires:]
+      Content-Length: 0
+
+    ]]>
+  </send>
+
+  <label id="1"/>
+
+  <pause milliseconds="1000"/>
+
+   <send>
+    <![CDATA[
+      MESSAGE sip:bob@[local_ip] SIP/2.0
+      Via: SIP/2.0/[transport] [local_ip]:[local_port];branch=[branch]
+      From: <sip:john@[local_ip]:[local_port]>;tag=[pid]SIPpTag00[call_number]
+      To: <sip:bob@[local_ip]:[local_port]>
+      Call-ID: [call_id]
+      CSeq: 3 MESSAGE
+      Max-Forwards: 70
+      Content-Type: text/plain
+      Content-Length: [len]
+
+      Hello Bob!
+    ]]>
+  </send>
+
+  <recv response="200">
+  </recv>
+
+  <label id="2"/>
+
+</scenario>
